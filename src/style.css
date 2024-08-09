@@ -1,6 +1,8 @@
 html,
 body {
   background: var(--default);
+  margin: 0;
+  padding: 0;
 }
 
 :root {
@@ -21,13 +23,16 @@ body {
   display: grid;
   grid-template-columns: repeat(5, auto);
   grid-template-rows: repeat(6, auto);
+  margin: 0;
 }
 
 #keyboard {
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
   height: 600px;
+  margin: 0;
 }
 
 .keysGrid {
@@ -76,17 +81,9 @@ body {
   }
 }
 
-#keyboard {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  /* gap: 5px;  */
-}
-
 button {
   padding: 12px;
   font-size: 20px;
-  /* border: 1px solid #ccc; */
   border-radius: 6px;
   cursor: pointer;
   background-color: #818384;
@@ -96,16 +93,13 @@ button {
 button:hover {
   background-color: var(--wrong);
 }
+
 button:active {
   background-color: #ddd;
 }
-/*
-.keysContainer, .keysContainerMiddle, .keysContainerBottom {
-    margin: 5px;
-} */
 
 .keys {
-  margin: 2px;
+  margin: 1px;
 }
 
 .keys.wrong {
@@ -114,7 +108,36 @@ button:active {
 .keys.wrongLocation {
   background: var(--wrongLocation);
 }
-
 .keys.correct {
   background: var(--correct);
+}
+
+/* Media Queries */
+@media only screen and (max-width: 768px) {
+  #keyboard {
+    height: auto;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .keysContainer,
+  .keysContainerBottom {
+    display: flex;
+    width: 100%;
+    margin: 0;
+  }
+
+  .keysContainerMiddle {
+    display: flex;
+    width: 92%;
+  }
+
+  .keysContainer > .keys,
+  .keysContainerMiddle > .keys,
+  .keysContainerBottom > .keys {
+    padding: 0.3em;
+    height: 60px;
+    flex: 1;
+    margin: 1px;
+  }
 }
