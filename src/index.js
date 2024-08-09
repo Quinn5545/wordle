@@ -15290,6 +15290,36 @@ const targetWords = [
   "shave",
 ];
 
+const firstRow = "QWERTYUIOP";
+const secondRow = "ASDFGHJKL";
+const ENTER = "Enter";
+const thirdRow = "ZXCVBNM";
+const DEL = "Delete";
+
+let gameOver = false;
+
+const endGame = () => {
+  gameOver = true;
+};
+
+const openButton = document.querySelector("[data-open-modal]");
+const closeButton = document.querySelector("[data-close-modal]");
+const modal = document.querySelector("[data-modal]");
+
+openButton.addEventListener("click", () => {
+  modal.show();
+});
+
+closeButton.addEventListener("click", () => {
+  modal.close();
+});
+
+// openButton.click();
+// closeButton.click();
+
+const modalBox = document.getElementsByClassName("modal-container")[0];
+const modalText = document.createElement("div");
+
 const state = {
   secret: targetWords[Math.floor(Math.random() * targetWords.length)],
   grid: Array(6)
@@ -15297,6 +15327,48 @@ const state = {
     .map(() => Array(5).fill("")),
   currentRow: 0,
   currentCol: 0,
+  firstRow: firstRow.split(""),
+  secondRow: secondRow.split(""),
+  thirdRow: thirdRow.split(""),
+};
+// console.log(state.secret);
+
+const drawButtons = (container, id, letter) => {
+  const button = document.createElement("button");
+
+  button.className = "keys";
+  button.id = `${id}`;
+  button.textContent = letter;
+  button.onclick = () => registerButtonClicks(letter);
+  //   console.log(letter);
+
+  container.appendChild(button);
+  return button;
+};
+
+const drawLettersContainer = (container) => {
+  const keyContainer = document.createElement("div");
+  keyContainer.className = "keysContainer";
+  const keyContainerMiddle = document.createElement("div");
+  keyContainerMiddle.className = "keysContainerMiddle";
+  const keyContainerBottom = document.createElement("div");
+  keyContainerBottom.className = "keysContainerBottom";
+
+  state.firstRow.forEach((letter) => {
+    drawButtons(keyContainer, letter, letter);
+  });
+  state.secondRow.forEach((letter) => {
+    drawButtons(keyContainerMiddle, letter, letter);
+  });
+  drawButtons(keyContainerBottom, ENTER, ENTER);
+  state.thirdRow.forEach((letter) => {
+    drawButtons(keyContainerBottom, letter, letter);
+  });
+  drawButtons(keyContainerBottom, DEL, DEL);
+
+  container.appendChild(keyContainer);
+  container.appendChild(keyContainerMiddle);
+  container.appendChild(keyContainerBottom);
 };
 
 // console.log(state.secret);
@@ -15351,14 +15423,21 @@ const revealWord = (guess) => {
   for (let i = 0; i < 5; i++) {
     const box = document.getElementById(`box${row}${i}`);
     const letter = box.textContent;
+    const key = document.getElementById(letter.toUpperCase());
+    // console.log(letter);
+
+    // console.log("key---->", key);
 
     setTimeout(() => {
       if (letter === state.secret[i]) {
         box.classList.add("correct");
+        key.classList.add("correct");
       } else if (state.secret.includes(letter)) {
         box.classList.add("wrongLocation");
+        key.classList.add("wrongLocation");
       } else {
         box.classList.add("wrong");
+        key.classList.add("wrong");
       }
     }, ((i + 1) * animationDuration) / 2);
 
@@ -15370,9 +15449,23 @@ const revealWord = (guess) => {
 
     setTimeout(() => {
       if (isWinner) {
-        alert(`Congratulations!`);
+        modalText.textContent = "Congratulations!";
+        modalBox.appendChild(modalText);
+        openButton.click();
+        setTimeout(() => {
+          closeButton.click();
+          modalBox.removeChild(modalText);
+        }, 3000);
+        endGame();
       } else if (isGameOver) {
-        alert(`You Suck! The Word Was: ${state.secret}`);
+        modalText.textContent = `Better luck next time! The word was: ${state.secret}`;
+        modalBox.appendChild(modalText);
+        openButton.click();
+        setTimeout(() => {
+          closeButton.click();
+          modalBox.removeChild(modalText);
+        }, 3000);
+        endGame();
       }
     }, 3 * animationDuration);
   }
@@ -15397,6 +15490,7 @@ const removeLetter = () => {
 const registerKeyboardEvents = () => {
   document.body.onkeydown = (e) => {
     const key = e.key;
+    if (gameOver) return;
 
     if (key === "Enter") {
       if (state.currentCol === 5) {
@@ -15406,7 +15500,13 @@ const registerKeyboardEvents = () => {
           state.currentRow++;
           state.currentCol = 0;
         } else {
-          alert("not real word");
+          modalText.textContent = "Not in Word List";
+          modalBox.appendChild(modalText);
+          openButton.click();
+          setTimeout(() => {
+            closeButton.click();
+            modalBox.removeChild(modalText);
+          }, 3000);
         }
       }
     }
@@ -15422,11 +15522,48 @@ const registerKeyboardEvents = () => {
   };
 };
 
+const registerButtonClicks = (letter) => {
+  //   console.log(letter);
+  if (gameOver) return;
+
+  if (letter === "Enter") {
+    if (state.currentCol === 5) {
+      const word = getCurrentWord();
+      if (isWordValid(word)) {
+        revealWord(word);
+        state.currentRow++;
+        state.currentCol = 0;
+      } else {
+        modalText.textContent = "Not in Word List";
+        modalBox.appendChild(modalText);
+        openButton.click();
+        setTimeout(() => {
+          closeButton.click();
+          modalBox.removeChild(modalText);
+        }, 3000);
+      }
+    }
+  }
+
+  if (letter === "Delete") {
+    removeLetter();
+  }
+
+  if (letter && letter.length < 2) {
+    addLetter(letter.toLowerCase());
+  }
+
+  updateGrid();
+};
+
 const startUp = () => {
   const game = document.getElementById("game");
   drawGrid(game);
+  const keys = document.getElementById("keyboard");
+  drawLettersContainer(keys);
 
   registerKeyboardEvents();
+  registerButtonClicks();
 
   //   state.grid = Array(6)
   //     .fill()

@@ -7,9 +7,16 @@
     <link rel="stylesheet" href="./src/style.css" />
   </head>
   <body>
+    <button hidden data-open-modal>open</button>
+    <dialog data-modal>
+      <div class="modal-container"></div>
+      <button hidden data-close-modal>close</button>
+    </dialog>
     <div id="game">
-      <div class="grid"></div>
+      <!-- <div class="grid"></div> -->
     </div>
     <script src="./src/index.js" type="module"></script>
+    <div id="keyboard"></div>
+    <script src="./src/keyboard.js" type="module"></script>
   </body>
 </html>
