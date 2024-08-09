@@ -1,1 +1,1 @@
-This is a fun little world recreation, with some personalization coming soon
+This is a fun little wordle recreation, with some personalization coming soon
