@@ -89,6 +89,7 @@ button {
   cursor: pointer;
   background-color: #818384;
   color: white;
+  touch-action: manipulation;
 }
 
 button:hover {

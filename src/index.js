@@ -15332,7 +15332,7 @@ const state = {
   secondRow: secondRow.split(""),
   thirdRow: thirdRow.split(""),
 };
-console.log(state.secret);
+// console.log(state.secret);
 
 const drawButtons = (container, id, letter) => {
   const button = document.createElement("button");
