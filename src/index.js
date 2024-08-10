@@ -15319,6 +15319,7 @@ closeButton.addEventListener("click", () => {
 
 const modalBox = document.getElementsByClassName("modal-container")[0];
 const modalText = document.createElement("div");
+modalText.className = "popup";
 
 const state = {
   secret: targetWords[Math.floor(Math.random() * targetWords.length)],
@@ -15331,7 +15332,7 @@ const state = {
   secondRow: secondRow.split(""),
   thirdRow: thirdRow.split(""),
 };
-// console.log(state.secret);
+console.log(state.secret);
 
 const drawButtons = (container, id, letter) => {
   const button = document.createElement("button");
