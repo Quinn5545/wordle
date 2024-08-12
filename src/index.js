@@ -1,3 +1,6 @@
+import { introModal, rulesState, updateRules } from "./introModal.js";
+import { partyModal } from "./partyModal.js";
+
 const dictionary = [
   "aahed",
   "aalii",
@@ -15393,11 +15396,11 @@ const drawBox = (container, row, col, letter = "") => {
   return box;
 };
 
-const drawGrid = (container) => {
+const drawGrid = (container, rulesGuesses) => {
   const grid = document.createElement("div");
   grid.className = "grid";
 
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < rulesGuesses; i++) {
     for (let j = 0; j < 5; j++) {
       drawBox(grid, i, j);
     }
@@ -15419,6 +15422,8 @@ const isWordValid = (word) => {
 
 const revealWord = (guess) => {
   const row = state.currentRow;
+  //   console.log("row-->", row);
+
   const animationDuration = 500;
 
   for (let i = 0; i < 5; i++) {
@@ -15446,7 +15451,7 @@ const revealWord = (guess) => {
     box.style.animationDelay = `${(i * animationDuration) / 2}ms`;
 
     const isWinner = state.secret === guess;
-    const isGameOver = state.currentRow === 5;
+    const isGameOver = state.currentRow === rulesState.grid[0] - 1;
 
     setTimeout(() => {
       if (isWinner) {
@@ -15478,6 +15483,8 @@ const isLetter = (key) => {
 
 const addLetter = (letter) => {
   if (state.currentCol === 5) return;
+  //   console.log("addkey", state.currentRow);
+
   state.grid[state.currentRow][state.currentCol] = letter;
   state.currentCol++;
 };
@@ -15558,18 +15565,37 @@ const registerButtonClicks = (letter) => {
 };
 
 const startUp = () => {
-  const game = document.getElementById("game");
-  drawGrid(game);
-  const keys = document.getElementById("keyboard");
-  drawLettersContainer(keys);
+  introModal((isNormalMode) => {
+    if (isNormalMode) {
+      let rulesGuesses = rulesState.grid[0];
+      state.grid = Array(rulesGuesses)
+        .fill()
+        .map(() => Array(5).fill(""));
 
-  registerKeyboardEvents();
-  registerButtonClicks();
+      const game = document.getElementById("game");
+      drawGrid(game, rulesGuesses);
+      const keys = document.getElementById("keyboard");
+      drawLettersContainer(keys);
 
-  //   state.grid = Array(6)
-  //     .fill()
-  //     .map(() => Array(5).fill("A"));
-  //   updateGrid();
+      registerKeyboardEvents();
+      registerButtonClicks();
+    } else {
+      partyModal((selectedTurns) => {
+        let rulesGuesses = selectedTurns;
+        state.grid = Array(rulesGuesses)
+          .fill()
+          .map(() => Array(5).fill(""));
+
+        const game = document.getElementById("game");
+        drawGrid(game, rulesGuesses);
+        const keys = document.getElementById("keyboard");
+        drawLettersContainer(keys);
+
+        registerKeyboardEvents();
+        registerButtonClicks();
+      });
+    }
+  });
 };
 
 startUp();
