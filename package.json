@@ -1,0 +1,23 @@
+{
+  "name": "wordle",
+  "version": "1.0.0",
+  "description": "This is a fun little wordle recreation, with some personalization coming soon",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Quinn5545/wordle.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Quinn5545/wordle/issues"
+  },
+  "homepage": "https://github.com/Quinn5545/wordle#readme",
+  "dependencies": {
+    "js-confetti": "^0.12.0"
+  }
+}

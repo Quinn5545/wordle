@@ -15455,6 +15455,7 @@ const revealWord = (guess) => {
 
     setTimeout(() => {
       if (isWinner) {
+        jsConfetti.addConfetti();
         modalText.textContent = "Congratulations!";
         modalBox.appendChild(modalText);
         openButton.click();
@@ -15464,6 +15465,9 @@ const revealWord = (guess) => {
         }, 3000);
         endGame();
       } else if (isGameOver) {
+        jsConfetti.addConfetti({
+          emojis: ["❌"],
+        });
         modalText.textContent = `Better luck next time! The word was: ${state.secret}`;
         modalBox.appendChild(modalText);
         openButton.click();
@@ -15476,6 +15480,8 @@ const revealWord = (guess) => {
     }, 3 * animationDuration);
   }
 };
+
+// console.log(state.secret);
 
 const isLetter = (key) => {
   return key.length === 1 && key.match(/[a-z]/i);
