@@ -15293,6 +15293,8 @@ const targetWords = [
   "shave",
 ];
 
+const jsConfetti = new JSConfetti();
+
 const firstRow = "QWERTYUIOP";
 const secondRow = "ASDFGHJKL";
 const ENTER = "Enter";
