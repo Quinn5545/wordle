@@ -31,7 +31,7 @@ export const introModal = (startGameCallback) => {
   modalContentOptions.className = "modal-content-party-intro";
 
   const modalTextOptions = document.createElement("p");
-  modalTextOptions.textContent = "I want to play party mode!";
+  modalTextOptions.textContent = "Choose to play normally or Party Mode!";
 
   const closeButtonParty = document.createElement("button");
   closeButtonParty.className = "modal-close-button-intro";
@@ -60,10 +60,10 @@ export const introModal = (startGameCallback) => {
   // };
 
   modalContent.appendChild(modalText);
+  modalContent.appendChild(modalTextOptions);
   modalContent.appendChild(closeButtonNormal);
   modalContainer.appendChild(modalContent);
 
-  modalContent.appendChild(modalTextOptions);
   modalContent.appendChild(closeButtonParty);
 
   document.body.appendChild(modalContainer);

@@ -13,7 +13,6 @@ export const partyModal = (startGameCallback) => {
   saveButtonArea.className = "modal-button-normal";
 
   // limited guesses mode
-
   const turnSelect = document.createElement("select");
   turnSelect.className = "turn-select";
 
@@ -29,6 +28,10 @@ export const partyModal = (startGameCallback) => {
   const modalText = document.createElement("p");
   modalText.textContent = "Welcome to Wordle: Party Edition!";
 
+  const modalTextSelection = document.createElement("p");
+  modalTextSelection.textContent =
+    "Chose the number of guesses you want to play with!";
+
   const saveButton = document.createElement("button");
   saveButton.className = "modal-close-button-intro";
   saveButton.textContent = "Start";
@@ -41,6 +44,7 @@ export const partyModal = (startGameCallback) => {
 
   modalContainer.appendChild(modalContent);
   modalContent.appendChild(modalText);
+  modalContent.appendChild(modalTextSelection);
   modalContent.appendChild(turnSelect);
   modalContent.appendChild(saveButton);
 
