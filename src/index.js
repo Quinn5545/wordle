@@ -15457,6 +15457,7 @@ const revealWord = (guess) => {
 
     setTimeout(() => {
       if (isWinner) {
+        navigator.vibrate(200);
         jsConfetti.addConfetti();
         modalText.textContent = "Congratulations!";
         modalBox.appendChild(modalText);
@@ -15464,9 +15465,10 @@ const revealWord = (guess) => {
         setTimeout(() => {
           closeButton.click();
           modalBox.removeChild(modalText);
-        }, 3000);
+        }, 10000);
         endGame();
       } else if (isGameOver) {
+        navigator.vibrate(200);
         jsConfetti.addConfetti({
           emojis: ["❌"],
         });
@@ -15476,7 +15478,7 @@ const revealWord = (guess) => {
         setTimeout(() => {
           closeButton.click();
           modalBox.removeChild(modalText);
-        }, 3000);
+        }, 10000);
         endGame();
       }
     }, 3 * animationDuration);

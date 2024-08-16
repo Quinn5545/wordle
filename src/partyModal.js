@@ -30,7 +30,7 @@ export const partyModal = (startGameCallback) => {
 
   const modalTextSelection = document.createElement("p");
   modalTextSelection.textContent =
-    "Chose the number of guesses you want to play with!";
+    "Choose the number of guesses you want to play with!";
 
   const saveButton = document.createElement("button");
   saveButton.className = "modal-close-button-intro";
