@@ -15457,10 +15457,6 @@ const revealWord = (guess) => {
 
     setTimeout(() => {
       if (isWinner) {
-        if ("vibrate" in navigator) {
-          console.log("Vibration is supported");
-          navigator.vibrate(200);
-        }
         jsConfetti.addConfetti();
         modalText.textContent = "Congratulations!";
         modalBox.appendChild(modalText);
@@ -15471,10 +15467,6 @@ const revealWord = (guess) => {
         }, 10000);
         endGame();
       } else if (isGameOver) {
-        if ("vibrate" in navigator) {
-          console.log("Vibration is supported");
-          navigator.vibrate(200);
-        }
         jsConfetti.addConfetti({
           emojis: ["❌"],
         });
@@ -15549,10 +15541,6 @@ const registerKeyboardEvents = () => {
 const registerButtonClicks = (letter) => {
   //   console.log(letter);
   if (gameOver) return;
-  if ("vibrate" in navigator) {
-    console.log("Vibration is supported");
-    navigator.vibrate(200);
-  }
 
   if (letter === "Enter") {
     if (state.currentCol === 5) {
