@@ -15304,6 +15304,7 @@ const DEL = "Delete";
 let gameOver = false;
 
 const endGame = () => {
+  stopTimer();
   gameOver = true;
 };
 
@@ -15319,9 +15320,6 @@ closeButton.addEventListener("click", () => {
   modal.close();
 });
 
-// openButton.click();
-// closeButton.click();
-
 const modalBox = document.getElementsByClassName("modal-container")[0];
 const modalText = document.createElement("div");
 modalText.className = "popup";
@@ -15336,8 +15334,8 @@ const state = {
   firstRow: firstRow.split(""),
   secondRow: secondRow.split(""),
   thirdRow: thirdRow.split(""),
+  timed: false,
 };
-// console.log(state.secret);
 
 const drawButtons = (container, id, letter) => {
   const button = document.createElement("button");
@@ -15346,7 +15344,6 @@ const drawButtons = (container, id, letter) => {
   button.id = `${id}`;
   button.textContent = letter;
   button.onclick = () => registerButtonClicks(letter);
-  //   console.log(letter);
 
   container.appendChild(button);
   return button;
@@ -15422,41 +15419,69 @@ const isWordValid = (word) => {
   }
 };
 
-const revealWord = (guess) => {
+const revealWord = (guess, timeout) => {
   const row = state.currentRow;
-  //   console.log("row-->", row);
-
   const animationDuration = 500;
 
+  // Count occurrences of each letter in the target word
+  const targetLetterCount = {};
+  for (const letter of state.secret) {
+    targetLetterCount[letter] = (targetLetterCount[letter] || 0) + 1;
+  }
+
+  // First pass: mark correct letters
   for (let i = 0; i < 5; i++) {
     const box = document.getElementById(`box${row}${i}`);
     const letter = box.textContent;
     const key = document.getElementById(letter.toUpperCase());
-    // console.log(letter);
-
-    // console.log("key---->", key);
 
     setTimeout(() => {
-      if (letter === state.secret[i]) {
-        box.classList.add("correct");
-        key.classList.add("correct");
-      } else if (state.secret.includes(letter)) {
-        box.classList.add("wrongLocation");
-        key.classList.add("wrongLocation");
+      if (timeout && !box.classList.contains("protected")) {
+        box.classList.add("timeout");
+        if (key) key.classList.add("timeout");
       } else {
-        box.classList.add("wrong");
-        key.classList.add("wrong");
+        if (letter === state.secret[i]) {
+          box.classList.add("correct");
+          key.classList.add("correct");
+          // Decrease the count of the correct letter
+          targetLetterCount[letter]--;
+        }
       }
     }, ((i + 1) * animationDuration) / 2);
 
     box.classList.add("animated");
     box.style.animationDelay = `${(i * animationDuration) / 2}ms`;
+  }
+
+  // Second pass: mark incorrect letters and wrong locations
+  for (let i = 0; i < 5; i++) {
+    const box = document.getElementById(`box${row}${i}`);
+    const letter = box.textContent;
+    const key = document.getElementById(letter.toUpperCase());
+
+    setTimeout(() => {
+      if (letter === state.secret[i]) {
+        // Already marked correctly in the first pass
+        return;
+      } else if (
+        state.secret.includes(letter) &&
+        targetLetterCount[letter] > 0
+      ) {
+        box.classList.add("wrongLocation");
+        key.classList.add("wrongLocation");
+        targetLetterCount[letter]--; // Decrease the count for wrong locations
+      } else {
+        box.classList.add("wrong");
+        if (key) key.classList.add("wrong");
+      }
+    }, ((i + 1) * animationDuration) / 2);
 
     const isWinner = state.secret === guess;
     const isGameOver = state.currentRow === rulesState.grid[0] - 1;
 
     setTimeout(() => {
       if (isWinner) {
+        endGame();
         jsConfetti.addConfetti();
         modalText.textContent = "Congratulations!";
         modalBox.appendChild(modalText);
@@ -15465,8 +15490,8 @@ const revealWord = (guess) => {
           closeButton.click();
           modalBox.removeChild(modalText);
         }, 10000);
-        endGame();
       } else if (isGameOver) {
+        endGame();
         jsConfetti.addConfetti({
           emojis: ["❌"],
         });
@@ -15477,13 +15502,10 @@ const revealWord = (guess) => {
           closeButton.click();
           modalBox.removeChild(modalText);
         }, 10000);
-        endGame();
       }
     }, 3 * animationDuration);
   }
 };
-
-// console.log(state.secret);
 
 const isLetter = (key) => {
   return key.length === 1 && key.match(/[a-z]/i);
@@ -15491,9 +15513,12 @@ const isLetter = (key) => {
 
 const addLetter = (letter) => {
   if (state.currentCol === 5) return;
-  //   console.log("addkey", state.currentRow);
 
   state.grid[state.currentRow][state.currentCol] = letter;
+  const box = document.getElementById(
+    `box${state.currentRow}${state.currentCol}`
+  );
+  box.classList.add("protected");
   state.currentCol++;
 };
 
@@ -15502,8 +15527,13 @@ const removeLetter = () => {
   state.grid[state.currentRow][state.currentCol - 1] = "";
   state.currentCol--;
 };
+console.log(
+  "if you were smart enough to get into the console, here is the answer:",
+  state.secret
+);
 
 const registerKeyboardEvents = () => {
+  if (gameOver) return;
   document.body.onkeydown = (e) => {
     const key = e.key;
     if (gameOver) return;
@@ -15515,6 +15545,9 @@ const registerKeyboardEvents = () => {
           revealWord(word);
           state.currentRow++;
           state.currentCol = 0;
+          // console.log(gameOver);
+
+          if (state.timed) startTimer();
         } else {
           modalText.textContent = "Not in Word List";
           modalBox.appendChild(modalText);
@@ -15532,14 +15565,13 @@ const registerKeyboardEvents = () => {
     }
 
     if (isLetter(key)) {
-      addLetter(key);
+      addLetter(key.toLowerCase());
     }
     updateGrid();
   };
 };
 
 const registerButtonClicks = (letter) => {
-  //   console.log(letter);
   if (gameOver) return;
 
   if (letter === "Enter") {
@@ -15549,6 +15581,7 @@ const registerButtonClicks = (letter) => {
         revealWord(word);
         state.currentRow++;
         state.currentCol = 0;
+        if (state.timed) startTimer();
       } else {
         modalText.textContent = "Not in Word List";
         modalBox.appendChild(modalText);
@@ -15572,36 +15605,94 @@ const registerButtonClicks = (letter) => {
   updateGrid();
 };
 
+let intervalId;
+let timeLeft;
+
+const updateCountdown = () => {
+  let minutes = Math.floor(timeLeft / 60);
+  let seconds = timeLeft % 60;
+
+  minutes = minutes < 10 ? "0" + minutes : minutes;
+  seconds = seconds < 10 ? "0" + seconds : seconds;
+
+  const countdownEl = document.getElementById("timer");
+  countdownEl.innerText = `${minutes}:${seconds}`;
+};
+
+function startTimer() {
+  if (gameOver) return;
+  if (intervalId) {
+    clearInterval(intervalId);
+  }
+
+  timeLeft = state.timed;
+  updateCountdown();
+
+  intervalId = setInterval(() => {
+    timeLeft--;
+
+    if (timeLeft <= 0) {
+      clearInterval(intervalId);
+      processAnswer();
+    } else {
+      updateCountdown();
+    }
+  }, 1000);
+}
+
+const stopTimer = () => {
+  clearInterval(intervalId);
+};
+
+const processAnswer = () => {
+  if (state.currentCol > 0) {
+    const word = getCurrentWord();
+
+    for (let i = 0; i < state.currentCol; i++) {
+      state.grid[state.currentRow][i] = word[i] || "x";
+    }
+
+    for (let i = state.currentCol; i < 5; i++) {
+      state.grid[state.currentRow][i] = "x";
+    }
+
+    revealWord(word, "timeout");
+  } else {
+    state.grid[state.currentRow] = ["x", "x", "x", "x", "x"];
+    revealWord("xxxxx", "timeout");
+  }
+
+  state.currentRow++;
+  state.currentCol = 0;
+  updateGrid();
+
+  if (state.currentRow < state.grid.length) {
+    startTimer();
+  }
+};
+
 const startUp = () => {
   introModal((isNormalMode) => {
     if (isNormalMode) {
       let rulesGuesses = rulesState.grid[0];
+      let rulesTimed = rulesState.timed;
       state.grid = Array(rulesGuesses)
         .fill()
         .map(() => Array(5).fill(""));
+
+      state.timed = rulesTimed * 60;
+
+      if (state.timed > 0) {
+        startTimer();
+      }
 
       const game = document.getElementById("game");
       drawGrid(game, rulesGuesses);
       const keys = document.getElementById("keyboard");
       drawLettersContainer(keys);
 
-      registerKeyboardEvents();
+      registerKeyboardEvents(startTimer);
       registerButtonClicks();
-    } else {
-      partyModal((selectedTurns) => {
-        let rulesGuesses = selectedTurns;
-        state.grid = Array(rulesGuesses)
-          .fill()
-          .map(() => Array(5).fill(""));
-
-        const game = document.getElementById("game");
-        drawGrid(game, rulesGuesses);
-        const keys = document.getElementById("keyboard");
-        drawLettersContainer(keys);
-
-        registerKeyboardEvents();
-        registerButtonClicks();
-      });
     }
   });
 };

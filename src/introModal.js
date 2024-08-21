@@ -31,11 +31,11 @@ export const introModal = (startGameCallback) => {
   modalContentOptions.className = "modal-content-party-intro";
 
   const modalTextOptions = document.createElement("p");
-  modalTextOptions.textContent = "Choose to play normally or Party Mode!";
+  modalTextOptions.textContent = "Choose to play normally or Challenge Mode!";
 
   const closeButtonParty = document.createElement("button");
   closeButtonParty.className = "modal-close-button-intro";
-  closeButtonParty.textContent = "Party Mode";
+  closeButtonParty.textContent = "Challenge Mode";
 
   closeButtonParty.onclick = () => {
     rulesState.normal = false;
@@ -48,7 +48,7 @@ export const introModal = (startGameCallback) => {
   //
 
   const modalText = document.createElement("p");
-  modalText.textContent = "Welcome to Wordle: Party Edition!";
+  modalText.textContent = "Welcome to Wordle: Challenge Edition!";
 
   // const closeButton = document.createElement("button");
   // closeButton.className = "modal-close-button-intro";

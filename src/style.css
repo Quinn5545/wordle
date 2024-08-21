@@ -10,6 +10,7 @@ body {
   --wrong: #3a3a3c;
   --wrongLocation: #b59f3b;
   --correct: #538d4e;
+  --timeout: #d0460a;
 }
 
 #game {
@@ -63,6 +64,10 @@ body {
 
 .box.correct {
   background: var(--correct);
+}
+
+.box.timeout {
+  border: 2px solid  var(--timeout);
 }
 
 .animated {
