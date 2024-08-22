@@ -15685,7 +15685,7 @@ const startUp = () => {
         .fill()
         .map(() => Array(5).fill(""));
 
-      state.timed = rulesTimed * 10;
+      state.timed = rulesTimed * 60;
 
       if (state.timed > 0) {
         startTimer();
