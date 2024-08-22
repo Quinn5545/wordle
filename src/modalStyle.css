@@ -15,6 +15,17 @@
 
 #timer {
   color: #ffffff;
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+}
+
+.timer-hidden {
+  display: none;
 }
 
 /* Modal content styling */
@@ -34,7 +45,7 @@
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
-  background-color: #007bff;
+  background-color: #538d4e;
   color: white;
   border: none;
   border-radius: 5px;
@@ -43,7 +54,7 @@
 
 .modal-close-button:hover,
 .modal-close-button-intro:hover {
-  background-color: #0056b3;
+  background-color: #3e693a;
 }
 
 .turn-select {
@@ -56,19 +67,19 @@
   border-radius: 4px;
   background-color: #f8f8f8;
   color: #333;
-  appearance: none; /* Removes default arrow in some browsers */
+  appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
 }
 
 .turn-select:focus {
-  border-color: #007bff;
+  border-color: #538d4e;
   outline: none;
 }
 
 .turn-select option {
   background-color: #ffffff;
-  color: #333;
+  color: #538d4e;
   padding: 10px;
 }
 

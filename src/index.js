@@ -1,5 +1,4 @@
 import { introModal, rulesState, updateRules } from "./introModal.js";
-import { partyModal } from "./partyModal.js";
 
 const dictionary = [
   "aahed",
@@ -15302,9 +15301,11 @@ const thirdRow = "ZXCVBNM";
 const DEL = "Delete";
 
 let gameOver = false;
+const timerAtTop = document.getElementById("timer");
 
 const endGame = () => {
   stopTimer();
+  timerAtTop.remove();
   gameOver = true;
 };
 

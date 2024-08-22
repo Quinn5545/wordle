@@ -2,6 +2,8 @@ import { rulesState } from "./introModal.js";
 
 export const updateRules = () => ({ ...rulesState });
 
+const timerAtTop = document.getElementById("timer");
+
 export const partyModal = (startGameCallback) => {
   const modalContainer = document.createElement("div");
   modalContainer.className = "modal-container-intro";
@@ -40,11 +42,16 @@ export const partyModal = (startGameCallback) => {
   // timed mode
 
   const timedConfirm = document.createElement("input");
+  timedConfirm.className = "time-select-checkbox";
   timedConfirm.type = "checkbox";
   timedConfirm.checked = false;
 
   const timedSelect = document.createElement("select");
   timedSelect.className = "turn-select";
+
+  const timedSelectText = document.createElement("p");
+  timedSelectText.textContent = "Select how long you'd like for each turn";
+  timedSelectText.className = "turn-select-text";
 
   const timedOptions = [0.25, 0.5, 0.75, 1, 2, 3];
   timedOptions.forEach((time) => {
@@ -53,7 +60,7 @@ export const partyModal = (startGameCallback) => {
 
     if (time < 0.3) {
       const seconds = time * 60;
-      option.textContent = `${seconds} sec (you're crazy)`;
+      option.textContent = `${seconds} sec (insane mode)`;
     } else if (time < 1) {
       const seconds = time * 60;
       option.textContent = `${seconds} sec`;
@@ -91,9 +98,11 @@ export const partyModal = (startGameCallback) => {
   timedConfirm.addEventListener("change", function () {
     if (timedConfirm.checked) {
       // console.log("Checkbox is checked!");
+      timedDiv.appendChild(timedSelectText);
       timedDiv.appendChild(timedSelect);
     } else {
       // console.log("Checkbox is unchecked.");
+      timedDiv.removeChild(timedSelectText);
       timedDiv.removeChild(timedSelect);
     }
   });
@@ -108,6 +117,7 @@ export const partyModal = (startGameCallback) => {
     if (timedConfirm.checked) {
       rulesState.timed = parseFloat(timedSelect.value);
     } else {
+      timerAtTop.classList.add("timer-hidden");
       rulesState.timed = false;
     }
     document.body.removeChild(modalContainer);

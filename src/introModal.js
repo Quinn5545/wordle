@@ -7,6 +7,8 @@ export const rulesState = {
 };
 export const updateRules = () => ({ ...rulesState });
 
+const timerAtTop = document.getElementById("timer");
+
 export const introModal = (startGameCallback) => {
   const modalContainer = document.createElement("div");
   modalContainer.className = "modal-container-intro";
@@ -24,6 +26,7 @@ export const introModal = (startGameCallback) => {
     rulesState.timed = false;
 
     document.body.removeChild(modalContainer);
+    timerAtTop.classList.add("timer-hidden");
     startGameCallback(true);
   };
 
