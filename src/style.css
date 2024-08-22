@@ -97,9 +97,9 @@ button {
   touch-action: manipulation;
 }
 
-button:hover {
+/* button:hover {
   background-color: var(--wrong);
-}
+} */
 
 button:active {
   background-color: #ddd;
