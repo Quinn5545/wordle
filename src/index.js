@@ -15525,6 +15525,10 @@ const addLetter = (letter) => {
 
 const removeLetter = () => {
   if (state.currentCol === 0) return;
+  const box = document.getElementById(
+    `box${state.currentRow}${state.currentCol - 1}`
+  );
+  if (box) box.classList.remove("protected");
   state.grid[state.currentRow][state.currentCol - 1] = "";
   state.currentCol--;
 };
@@ -15681,7 +15685,7 @@ const startUp = () => {
         .fill()
         .map(() => Array(5).fill(""));
 
-      state.timed = rulesTimed * 60;
+      state.timed = rulesTimed * 10;
 
       if (state.timed > 0) {
         startTimer();
